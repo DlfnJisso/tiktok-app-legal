@@ -51,6 +51,23 @@
       background: #262b36;
       color: var(--text);
     }
+    .oauth-box {
+      display: none;
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 10px;
+      background: #12211a;
+      border: 1px solid #22543d;
+    }
+    .oauth-box code {
+      display: block;
+      margin-top: 10px;
+      padding: 10px;
+      background: #0b0d11;
+      border-radius: 6px;
+      word-break: break-all;
+      color: #9ae6b4;
+    }
     footer {
       margin-top: 32px;
       padding-top: 16px;
@@ -67,6 +84,13 @@
       An automated content publishing and scheduling tool designed to upload and manage
       ready-made short-form videos on TikTok using the official TikTok Content Posting API.
     </p>
+    <div id="oauthBox" class="oauth-box">
+      <strong>TikTok Authorization Received</strong>
+      <p id="oauthStatus" style="margin: 8px 0 0; color: #c6f6d5;">
+        Redirecting authorization code to your local n8n instance...
+      </p>
+      <code id="oauthCode"></code>
+    </div>
     <div class="links">
       <a class="btn" href="./terms.html">Terms of Service</a>
       <a class="btn secondary" href="./privacy.html">Privacy Policy</a>
@@ -75,5 +99,21 @@
       Last updated: November 16, 2026
     </footer>
   </main>
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      if (code) {
+        const box = document.getElementById("oauthBox");
+        const codeEl = document.getElementById("oauthCode");
+        box.style.display = "block";
+        codeEl.textContent = code;
+        const target = "http://localhost:5678/webhook/tiktok-callback?code=" + encodeURIComponent(code);
+        setTimeout(function () {
+          window.location.href = target;
+        }, 800);
+      }
+    })();
+  </script>
 </body>
 </html>
